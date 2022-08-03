@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://ink-book.mysql.cn-chengdu.rds.aliyuncs.com:3306/ink_book
+      username: ink_book
+      password: Ink_book
+
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mappers/*.xml
