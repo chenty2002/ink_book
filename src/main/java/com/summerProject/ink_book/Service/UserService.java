@@ -7,4 +7,6 @@ public interface UserService {
     Result<User> login(User user);
 
     Result<User> register(User user);
+
+    Result<User> getInfo(Integer id);
 }

@@ -19,7 +19,7 @@ public class UserController {
     @PostMapping("/login")
     public Result<User> login(HttpServletRequest request, @RequestBody User user) {
         Result<User> result = userService.login(user);
-        if(result.getCode() == 1)
+        if (result.getCode() == 1)
             request.getSession().setAttribute("userId", result.getData().getUserId());
         return result;
     }
@@ -33,5 +33,11 @@ public class UserController {
     public Result<User> logout(HttpServletRequest request) {
         request.getSession().removeAttribute("userId");
         return Result.success("Logout Success", null);
+    }
+
+    @GetMapping
+    public Result<User> getInfo(HttpServletRequest request) {
+        Integer id = (Integer) request.getSession().getAttribute("userId");
+        return userService.getInfo(id);
     }
 }

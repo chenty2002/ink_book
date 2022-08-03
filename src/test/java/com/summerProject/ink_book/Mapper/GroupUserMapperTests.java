@@ -20,8 +20,6 @@ public class GroupUserMapperTests {
 
     @Test
     void selectTest() {
-        Group group = new Group();
-        group.setGroupId(1);
-        System.out.println(groupUserMapper.selectMemByGroup(group));
+     
     }
 }

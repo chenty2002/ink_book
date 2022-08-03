@@ -23,11 +23,10 @@ public class UserServiceImpl implements UserService {
         String md5pwd = DigestUtils.md5DigestAsHex(pwd.getBytes(StandardCharsets.UTF_8));
         user.setPassword(md5pwd);
         User newUser = userMapper.selectUserByPwd(user);
-        if(newUser != null) {
+        if (newUser != null) {
             newUser.setPassword(pwd);
             return Result.success("Login Success", newUser);
-        }
-        else return Result.fail("Login Failure");
+        } else return Result.fail("Login Failure");
     }
 
     @Override
@@ -35,9 +34,14 @@ public class UserServiceImpl implements UserService {
         String pwd = DigestUtils.md5DigestAsHex(user.getPassword().getBytes(StandardCharsets.UTF_8));
         User newUser = User.copyUser(user);
         user.setPassword(pwd);
-        if(userMapper.insertUser(user) > 0) {
+        if (userMapper.insertUser(user) > 0) {
             newUser.setUserId(user.getUserId());
             return Result.success("Register success", newUser);
         } else return Result.fail("Register Failure");
+    }
+
+    @Override
+    public Result<User> getInfo(Integer id) {
+        return Result.success("User Info", userMapper.getUser(id));
     }
 }

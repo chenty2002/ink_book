@@ -5,16 +5,69 @@
 
 <mapper namespace="com.summerProject.ink_book.Mapper.GroupMapper">
     <select id="selectGroupById" resultType="com.summerProject.ink_book.Entity.Group">
-        select * from ink_book.`groups` where groupId = #{id}
+        select *
+        from ink_book.`groups`
+        where groupId = #{id}
     </select>
-    <insert id="insertGroup" parameterType="com.summerProject.ink_book.Entity.Group" useGeneratedKeys="true" keyProperty="groupId">
-        insert into ink_book.`groups`(ink_book.`groups`.groupName, ink_book.`groups`.groupCreateTime, ink_book.`groups`.groupProfile)
+    <insert id="insertGroup" parameterType="com.summerProject.ink_book.Entity.Group" useGeneratedKeys="true"
+            keyProperty="groupId">
+        insert into ink_book.`groups`(ink_book.`groups`.groupName, ink_book.`groups`.groupCreateTime,
+                                      ink_book.`groups`.groupProfile)
         VALUES (#{groupName}, #{groupCreateTime}, #{groupProfile})
     </insert>
-    <select id="selectGroupByMem" parameterType="com.summerProject.ink_book.Entity.User" resultType="com.summerProject.ink_book.Entity.Group">
-        select * from ink_book.`groups` a, ink_book.group_user b where a.groupId=b.groupId and b.userId=#{userId}
+    <select id="selectGroupByMem" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
     </select>
-    <select id="selectGroupByFounder" parameterType="com.summerProject.ink_book.Entity.User" resultType="com.summerProject.ink_book.Entity.Group">
-        select * from ink_book.`groups` a, ink_book.group_user b where a.groupId=b.groupId and b.userId=#{userId} and b.userLevel=3
+    <select id="selectGroupByMemPage" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+        limit #{page}, #{size}
+    </select>
+    <select id="selectGroupByFounder" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+          and b.userLevel = 3
+    </select>
+    <select id="selectGroupByFounderPage" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+          and b.userLevel = 3
+        limit #{page}, #{size}
+    </select>
+    <select id="selectUserByGroup">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+    </select>
+    <select id="selectUserByGroupPage">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+        limit #{page}, #{size}
+    </select>
+    <select id="selectUserByGroupLevel">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+          and b.userLevel >= #{level}
     </select>
 </mapper>

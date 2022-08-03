@@ -29,8 +29,7 @@ public class GroupServiceImpl implements GroupService {
         group.setGroupProfile("");
         group.setGroupCreateTime(LocalDateTime.now());
         group.setFounder(founder);
-        groupMapper.insertGroup(group);
-        if(groupUserMapper.insertGroup(group.getGroupId(), founder.getUserId()) > 0)
+        if (groupMapper.insertGroup(group) > 0 && groupUserMapper.insertGroup(group.getGroupId(), founder.getUserId()) > 0)
             return Result.success("Group Created", group);
         else return Result.fail("Group not Created");
     }
@@ -38,30 +37,36 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public Result<String> isAdmin(Group group, User user) {
         Integer level = groupUserMapper.getLevel(group, user.getUserId());
-        if(level == null)
+        if (level == null)
             return Result.fail("User " + user.getUserEmail() + " not in the Group");
-        else if(level.equals(UserLevel.MEMBER.getCode()))
+        else if (level.equals(UserLevel.MEMBER.getCode()))
             return Result.fail("User " + user.getUserEmail() + " not an admin");
         return Result.success("User " + user.getUserEmail() + " is an admin", "");
     }
 
     @Override
     public Result<String> memJoin(Group group, User admin, Integer user) {
-        if(groupUserMapper.insertMem(group, user) > 0)
+        if (groupUserMapper.insertMem(group, user) > 0)
             return Result.success("Member Joined", "");
         else return Result.fail("Member not Joined");
     }
 
     @Override
     public Result<String> setAdmin(Group group, User admin, Integer user) {
-        if(groupUserMapper.setAdmin(group, user) > 0)
+        if (groupUserMapper.setAdmin(group, user) > 0)
             return Result.success("New Admin Set", "");
         return Result.fail("New Admin not Set");
     }
 
-    @Override
-    public Result<List<User>> getGroupMems(Group group) {
-        List<User> members = groupUserMapper.selectMemByGroup(group);
-        return Result.success("Members Selected", members);
+    public Result<List<User>> getAllMems(Group group) {
+        return Result.success("All Group Members", groupMapper.selectUserByGroup(group.getGroupId()));
+    }
+
+    public Result<List<Group>> getAllGroup(User user) {
+        return Result.success("All Participated Groups", groupMapper.selectGroupByMem(user.getUserId()));
+    }
+
+    public Result<List<Group>> getFoundedGroup(User user) {
+        return Result.success("All Groups Founded", groupMapper.selectGroupByFounder(user.getUserId()));
     }
 }

@@ -8,11 +8,17 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
     Integer insertUser(User user);
+
     User selectUserById(Integer id);
+
     List<User> selectUserByName(String name);
+
     User selectUserByEmail(String email);
+
     List<User> selectUserByRealName(String name); // like %s%
+
     User selectUserByPwd(User user); // authenticate user
-    List<User> selectUserByGroup(Integer id);
-    List<User> selectUserByGroupLevel(Integer id, Integer level);
+
+    User getUser(Integer id);
+
 }

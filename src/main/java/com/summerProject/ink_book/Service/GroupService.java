@@ -5,7 +5,6 @@ import com.summerProject.ink_book.Entity.User;
 import com.summerProject.ink_book.Utils.Result;
 
 import java.util.List;
-import java.util.Map;
 
 public interface GroupService {
     Result<Group> createGroup(User founder, String groupName);
@@ -16,5 +15,9 @@ public interface GroupService {
 
     Result<String> setAdmin(Group group, User admin, Integer user);
 
-    Result<List<User>> getGroupMems(Group group);
+    Result<List<User>> getAllMems(Group group);
+
+    Result<List<Group>> getAllGroup(User user);
+
+    Result<List<Group>> getFoundedGroup(User user);
 }
