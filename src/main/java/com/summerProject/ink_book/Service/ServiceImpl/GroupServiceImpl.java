@@ -74,4 +74,11 @@ public class GroupServiceImpl implements GroupService {
     public Result<List<Group>> getFoundedGroup(Integer id) {
         return Result.success("All Groups Founded", groupMapper.selectGroupByFounder(id));
     }
+
+    @Override
+    public Result<String> modifyGroup(Group group) {
+        if (groupMapper.updateGroup(group) > 0)
+            return Result.success("Group Info Modified", "");
+        return Result.fail("Group Info not Modified");
+    }
 }

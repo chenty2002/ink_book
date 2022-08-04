@@ -40,6 +40,16 @@ public class GroupController {
         }
     }
 
+    // 修改团队信息 POST 请求体传参
+    @PostMapping("/modifyInfo")
+    public Result<String> modifyInfo(HttpServletRequest request, @RequestBody Group group) {
+        User admin = (User) request.getSession().getAttribute("curUser");
+        if (groupservice.isAdmin(group, admin)) {
+            return groupservice.modifyGroup(group);
+        } else {
+            return Result.fail("Unauthorized");
+        }
+    }
 
     // 团队删除用户 POST url?传userId 请求体传group
     @PostMapping("/deleteMem")

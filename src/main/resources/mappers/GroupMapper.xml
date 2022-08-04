@@ -70,4 +70,16 @@
           and b.groupId = #{id}
           and b.userLevel >= #{level}
     </select>
+    <update id="updateGroup" parameterType="com.summerProject.ink_book.Entity.Group">
+        update ink_book.`groups`
+        <set>
+            <if test="groupName != null">
+                groupName = #{groupName}
+            </if>
+            <if test="groupProfile != null">
+                groupProfile = #{groupProfile}
+            </if>
+        </set>
+        where groupId = #{groupId}
+    </update>
 </mapper>

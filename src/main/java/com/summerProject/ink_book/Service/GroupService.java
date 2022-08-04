@@ -22,4 +22,6 @@ public interface GroupService {
     Result<List<Group>> getAllGroup(Integer id);
 
     Result<List<Group>> getFoundedGroup(Integer id);
+
+    Result<String> modifyGroup(Group group);
 }

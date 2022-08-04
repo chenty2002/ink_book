@@ -25,4 +25,6 @@ public interface GroupMapper {
     List<User> selectUserByGroupPage(Integer id, Integer page, Integer size);
 
     List<User> selectUserByGroupLevel(Integer id, Integer level);
+
+    Integer updateGroup(Group group);
 }
