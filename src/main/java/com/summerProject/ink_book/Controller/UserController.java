@@ -16,28 +16,36 @@ public class UserController {
         this.userService = userService;
     }
 
+
+    // 登录 POST 请求体传参
     @PostMapping("/login")
     public Result<User> login(HttpServletRequest request, @RequestBody User user) {
         Result<User> result = userService.login(user);
         if (result.getCode() == 1)
-            request.getSession().setAttribute("userId", result.getData().getUserId());
+            request.getSession().setAttribute("curUser", result.getData());
         return result;
     }
 
+
+    // 注册 POST 请求体传参
     @PostMapping("/register")
-    public Result<User> register(HttpServletRequest request, @RequestBody User user) {
+    public Result<User> register(@RequestBody User user) {
         return userService.register(user);
     }
 
-    @PostMapping("/logout")
+
+    // 下线 GET 无参数
+    @GetMapping("/logout")
     public Result<User> logout(HttpServletRequest request) {
-        request.getSession().removeAttribute("userId");
+        request.getSession().removeAttribute("curUser");
         return Result.success("Logout Success", null);
     }
 
-    @GetMapping
+
+    // 本用户信息 GET 无参数
+    @GetMapping("/info")
     public Result<User> getInfo(HttpServletRequest request) {
-        Integer id = (Integer) request.getSession().getAttribute("userId");
+        Integer id = ((User) request.getSession().getAttribute("curUser")).getUserId();
         return userService.getInfo(id);
     }
 }

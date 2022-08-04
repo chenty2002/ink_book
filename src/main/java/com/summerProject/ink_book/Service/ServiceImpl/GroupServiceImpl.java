@@ -35,13 +35,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Result<String> isAdmin(Group group, User user) {
+    public Boolean isAdmin(Group group, User user) {
         Integer level = groupUserMapper.getLevel(group, user.getUserId());
         if (level == null)
-            return Result.fail("User " + user.getUserEmail() + " not in the Group");
-        else if (level.equals(UserLevel.MEMBER.getCode()))
-            return Result.fail("User " + user.getUserEmail() + " not an admin");
-        return Result.success("User " + user.getUserEmail() + " is an admin", "");
+            return false;
+        else return !level.equals(UserLevel.MEMBER.getCode());
     }
 
     @Override
@@ -52,21 +50,28 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Result<String> memDelete(Group group, User admin, Integer user) {
+        if (groupUserMapper.deleteMem(group, user) > 0)
+            return Result.success("Member Deleted", "");
+        else return Result.fail("Member not Deleted");
+    }
+
+    @Override
     public Result<String> setAdmin(Group group, User admin, Integer user) {
         if (groupUserMapper.setAdmin(group, user) > 0)
             return Result.success("New Admin Set", "");
         return Result.fail("New Admin not Set");
     }
 
-    public Result<List<User>> getAllMems(Group group) {
-        return Result.success("All Group Members", groupMapper.selectUserByGroup(group.getGroupId()));
+    public Result<List<User>> getAllMems(Integer id) {
+        return Result.success("All Group Members", groupMapper.selectUserByGroup(id));
     }
 
-    public Result<List<Group>> getAllGroup(User user) {
-        return Result.success("All Participated Groups", groupMapper.selectGroupByMem(user.getUserId()));
+    public Result<List<Group>> getAllGroup(Integer id) {
+        return Result.success("All Participated Groups", groupMapper.selectGroupByMem(id));
     }
 
-    public Result<List<Group>> getFoundedGroup(User user) {
-        return Result.success("All Groups Founded", groupMapper.selectGroupByFounder(user.getUserId()));
+    public Result<List<Group>> getFoundedGroup(Integer id) {
+        return Result.success("All Groups Founded", groupMapper.selectGroupByFounder(id));
     }
 }

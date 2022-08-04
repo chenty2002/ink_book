@@ -4,6 +4,7 @@ public class Project {
     private Integer projectId;
     private String projectName;
     private String projectDescription;
+    private Integer deleted;
 
     @Override
     public String toString() {
@@ -36,5 +37,13 @@ public class Project {
 
     public void setProjectDescription(String projectDescription) {
         this.projectDescription = projectDescription;
+    }
+
+    public Integer getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Integer deleted) {
+        this.deleted = deleted;
     }
 }

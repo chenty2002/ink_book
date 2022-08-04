@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.summerProject.ink_book.Mapper.ProjectUserMapper">
+    <insert id="insertProjectUser">
+        insert into ink_book.project_user
+        values (#{pid}, #{uid})
+    </insert>
+    <select id="selectProjectUser" resultType="com.summerProject.ink_book.Entity.User">
+        select *
+        from ink_book.project_user a,
+             ink_book.users b
+        where a.userId = b.userId
+          and a.projectId = #{projectId}
+    </select>
+    <delete id="deleteProjectUser">
+        delete
+        from ink_book.project_user
+        where ink_book.project_user.projectId = #{projectId}
+          and ink_book.project_user.userId = #{userId}
+    </delete>
+</mapper>

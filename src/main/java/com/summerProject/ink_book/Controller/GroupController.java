@@ -19,48 +19,70 @@ public class GroupController {
         this.groupservice = groupservice;
     }
 
+
+    // 创建团队 POST 请求体传参
     @PostMapping("/createGroup")
     public Result<Group> createGroup(HttpServletRequest request, @RequestBody String groupName) {
-        User user = (User) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("curUser");
         return groupservice.createGroup(user, groupName);
 
     }
 
+
+    // 用户加入团队 POST url?传userId 请求体传group
     @PostMapping("/memJoin")
-    public Result<String> memJoin(HttpServletRequest request, @RequestBody Integer user, Group group) {
-        User nowuser = (User) request.getSession().getAttribute("user");
-
-        if (groupservice.isAdmin(group, nowuser).getCode() == 1) {
-            return groupservice.memJoin(group, nowuser, user);
+    public Result<String> memJoin(HttpServletRequest request, Integer userId, @RequestBody Group group) {
+        User admin = (User) request.getSession().getAttribute("curUser");
+        if (groupservice.isAdmin(group, admin)) {
+            return groupservice.memJoin(group, admin, userId);
         } else {
             return Result.fail("Unauthorized");
         }
     }
 
+
+    // 团队删除用户 POST url?传userId 请求体传group
+    @PostMapping("/deleteMem")
+    public Result<String> deleteMem(HttpServletRequest request, Integer userId, @RequestBody Group group) {
+        User admin = (User) request.getSession().getAttribute("curUser");
+        if (groupservice.isAdmin(group, admin)) {
+            return groupservice.memDelete(group, admin, userId);
+        } else {
+            return Result.fail("Unauthorized");
+        }
+    }
+
+
+    // 设置管理员 POST url?传userId 请求体传group
     @PostMapping("/setAdmin")
-    public Result<String> setAdmin(HttpServletRequest request, @RequestBody Integer user, Group group, User admin) {
-
-        User nowuser = (User) request.getSession().getAttribute("user");
-        Result<String> isAdmin = groupservice.isAdmin(group, nowuser);
-        if (isAdmin.getCode() == 1) {
-            return groupservice.setAdmin(group, nowuser, user);
+    public Result<String> setAdmin(HttpServletRequest request, Integer userId, @RequestBody Group group) {
+        User admin = (User) request.getSession().getAttribute("curUser");
+        if (groupservice.isAdmin(group, admin)) {
+            return groupservice.setAdmin(group, admin, userId);
         } else {
             return Result.fail("Unauthorized");
         }
     }
 
-    @GetMapping
-    public Result<List<User>> getGroupMem(HttpServletRequest request, @RequestBody Group group) {
-        return groupservice.getAllMems(group);
+
+    // 查询团队所有成员 GET url?传参
+    @GetMapping("/getGroupMems/{groupId}")
+    public Result<List<User>> getGroupMem(@PathVariable("groupId") Integer groupId) {
+        return groupservice.getAllMems(groupId);
     }
 
-    @GetMapping
-    public Result<List<Group>> getMyGroup(HttpServletRequest request, @RequestBody User user) {
-        return groupservice.getAllGroup(user);
+
+    // 查询本用户所有团队 GET 无参数
+    @GetMapping("/getMyGroups")
+    public Result<List<Group>> getMyGroup(HttpServletRequest request) {
+        Integer userId = ((User) request.getSession().getAttribute("curUser")).getUserId();
+        return groupservice.getAllGroup(userId);
     }
 
-    @GetMapping
-    public Result<List<Group>> getMyLeaderGroup(HttpServletRequest request, @RequestBody User user) {
-        return groupservice.getFoundedGroup(user);
+    // 查询本用户建立的所有团队 GET 无参数
+    @GetMapping("/getMyLeaderGroup")
+    public Result<List<Group>> getMyLeaderGroup(HttpServletRequest request) {
+        Integer userId = ((User) request.getSession().getAttribute("curUser")).getUserId();
+        return groupservice.getFoundedGroup(userId);
     }
 }

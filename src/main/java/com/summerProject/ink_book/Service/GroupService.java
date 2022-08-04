@@ -9,15 +9,17 @@ import java.util.List;
 public interface GroupService {
     Result<Group> createGroup(User founder, String groupName);
 
-    Result<String> isAdmin(Group group, User user);
+    Boolean isAdmin(Group group, User user);
 
     Result<String> memJoin(Group group, User admin, Integer user);
 
+    Result<String> memDelete(Group group, User admin, Integer user);
+
     Result<String> setAdmin(Group group, User admin, Integer user);
 
-    Result<List<User>> getAllMems(Group group);
+    Result<List<User>> getAllMems(Integer id);
 
-    Result<List<Group>> getAllGroup(User user);
+    Result<List<Group>> getAllGroup(Integer id);
 
-    Result<List<Group>> getFoundedGroup(User user);
+    Result<List<Group>> getFoundedGroup(Integer id);
 }
