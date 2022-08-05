@@ -33,6 +33,24 @@ create table `groups`
     
 )
 
+CREATE TABLE `article` 
+
+(
+
+  `articleId` int NOT NULL AUTO_INCREMENT,
+  
+  `title` varchar(100) DEFAULT NULL,
+  
+  `author` int DEFAULT NULL,
+  
+  `content` longtext,
+  
+  PRIMARY KEY (`articleId`)
+  
+) 
+
+
+
 create table project_user
 
 (
