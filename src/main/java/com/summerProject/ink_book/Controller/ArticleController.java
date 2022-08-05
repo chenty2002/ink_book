@@ -24,8 +24,8 @@ public class ArticleController {
     @PostMapping("/save")
     public Result<String> saveArticle(HttpServletRequest request, @RequestBody Article article) {
         log.info("[ArticleController.saveArticle] --- requesting creating an article");
-        Integer id = ((User) request.getSession().getAttribute("curUser")).getUserId();
-        article.setAuthor(id);
+//        Integer id = ((User) request.getSession().getAttribute("curUser")).getUserId();
+//        article.setAuthor(id);
         return articleService.saveArticle(article);
     }
 
@@ -63,8 +63,8 @@ public class ArticleController {
     @PostMapping("/update")
     public Result<String> updateArticle(HttpServletRequest request, @RequestBody Article article) {
         log.info("[ArticleController.updateArticle] --- requesting updating an article by User:");
-        User user = (User) request.getSession().getAttribute("curUser");
-        log.info(user.toString());
+//        User user = (User) request.getSession().getAttribute("curUser");
+//        log.info(user.toString());
         return articleService.updateArticle(article);
     }
 }

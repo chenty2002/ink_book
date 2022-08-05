@@ -2,13 +2,13 @@ package com.summerProject.ink_book.Entity;
 
 
 public class Article {
-    private int id;
+    private int articleId;
     private String title;
     private Integer author;
     private String content;
 
-    public void setId(int id) {
-        this.id = id;
+    public void setArticleId(int articleId) {
+        this.articleId = articleId;
     }
 
     public void setTitle(String title) {
@@ -23,8 +23,8 @@ public class Article {
         this.content = content;
     }
 
-    public int getId() {
-        return id;
+    public int getArticleId() {
+        return articleId;
     }
 
     public String getTitle() {
