@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserService {
     public Result<User> login(User user) {
         String pwd = user.getPassword();
         String md5pwd = DigestUtils.md5DigestAsHex(pwd.getBytes(StandardCharsets.UTF_8));
+        user.setUserEmail(user.getUserName());
         user.setPassword(md5pwd);
         User newUser = userMapper.selectUserByPwd(user);
         if (newUser != null) {
