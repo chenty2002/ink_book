@@ -6,6 +6,19 @@ spring:
       username: ink_book
       password: Ink_book
 
+  mail:
+    host: smtp.qq.com
+    default-encoding: UTF-8
+    username: ink_book@qq.com
+    password: kulqdeonfsuuchej
+    properties:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+
+
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

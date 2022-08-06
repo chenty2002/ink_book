@@ -33,7 +33,7 @@ public class ProjectController {
     }
 
     // 删除项目 DELETE url?传参
-    @DeleteMapping("/deleteProject/{projectId}")
+    @GetMapping("/deleteProject/{projectId}")
     public Result<Project> DeleteProject(@PathVariable("projectId") Integer projectId) {
         /*if(!projectUserService.FindProjectUser(projectId,userId)){
             return Result.fail("delete project Failure");
