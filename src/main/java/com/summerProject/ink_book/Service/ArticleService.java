@@ -6,7 +6,7 @@ import com.summerProject.ink_book.Utils.Result;
 import java.util.List;
 
 public interface ArticleService {
-    Result<String> saveArticle(Article article);
+    Result<Article> saveArticle(Article article);
 
     Result<Article> getArticleById(int id);
 

@@ -6,7 +6,6 @@ import com.summerProject.ink_book.Mapper.GroupMapper;
 import com.summerProject.ink_book.Mapper.GroupUserMapper;
 import com.summerProject.ink_book.Service.GroupService;
 import com.summerProject.ink_book.Utils.Result;
-import com.summerProject.ink_book.Utils.UserLevel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,41 +22,40 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Result<Group> createGroup(User founder, String groupName) {
+    public Result<Group> createGroup(Integer founder, String groupName, String groupProfile) {
         Group group = new Group();
         group.setGroupName(groupName);
-        group.setGroupProfile("");
+        group.setGroupProfile(groupProfile);
         group.setGroupCreateTime(LocalDateTime.now());
-        group.setFounder(founder);
-        if (groupMapper.insertGroup(group) > 0 && groupUserMapper.insertGroup(group.getGroupId(), founder.getUserId()) > 0)
+        if (groupMapper.insertGroup(group) > 0 && groupUserMapper.insertGroup(group.getGroupId(), founder) > 0)
             return Result.success("Group Created", group);
         else return Result.fail("Group not Created");
     }
 
     @Override
-    public Boolean isAdmin(Group group, User user) {
-        Integer level = groupUserMapper.getLevel(group, user.getUserId());
-        if (level == null)
+    public Boolean isAdmin(Integer group, Integer user, Integer level) {
+        Integer l = groupUserMapper.getLevel(group, user);
+        if (l == null)
             return false;
-        else return !level.equals(UserLevel.MEMBER.getCode());
+        return l >= level;
     }
 
     @Override
-    public Result<String> memJoin(Group group, User admin, Integer user) {
+    public Result<String> memJoin(Integer group, Integer user) {
         if (groupUserMapper.insertMem(group, user) > 0)
             return Result.success("Member Joined", "");
         else return Result.fail("Member not Joined");
     }
 
     @Override
-    public Result<String> memDelete(Group group, User admin, Integer user) {
+    public Result<String> memDelete(Integer group, Integer user) {
         if (groupUserMapper.deleteMem(group, user) > 0)
             return Result.success("Member Deleted", "");
         else return Result.fail("Member not Deleted");
     }
 
     @Override
-    public Result<String> setAdmin(Group group, User admin, Integer user) {
+    public Result<String> setAdmin(Integer group, Integer user) {
         if (groupUserMapper.setAdmin(group, user) > 0)
             return Result.success("New Admin Set", "");
         return Result.fail("New Admin not Set");
@@ -80,5 +78,13 @@ public class GroupServiceImpl implements GroupService {
         if (groupMapper.updateGroup(group) > 0)
             return Result.success("Group Info Modified", "");
         return Result.fail("Group Info not Modified");
+    }
+
+    @Override
+    public Result<String> deleteGroup(Integer id) {
+        if (groupMapper.deleteGroup(id) > 0)
+            if (groupUserMapper.deleteGroup(id) > 0)
+                return Result.success("Delete Success", "");
+        return Result.fail("Delete Fail");
     }
 }

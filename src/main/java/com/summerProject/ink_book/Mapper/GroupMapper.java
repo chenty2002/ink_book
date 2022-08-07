@@ -27,4 +27,6 @@ public interface GroupMapper {
     List<User> selectUserByGroupLevel(Integer id, Integer level);
 
     Integer updateGroup(Group group);
+
+    Integer deleteGroup(Integer id);
 }

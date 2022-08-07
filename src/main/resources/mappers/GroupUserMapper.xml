@@ -5,24 +5,35 @@
 
 <mapper namespace="com.summerProject.ink_book.Mapper.GroupUserMapper">
     <select id="getLevel" resultType="int">
-        select userLevel from ink_book.group_user where userId=#{user} and groupId=#{group.groupId}
-    </select>
-    <select id="selectMemByGroup" parameterType="com.summerProject.ink_book.Entity.Group" resultType="com.summerProject.ink_book.Entity.User">
-        select b.userId, b.userEmail, b.userName, b.userRealName, b.userProfile
-        from ink_book.group_user a, ink_book.users b where a.userId=b.userId and a.groupId=#{groupId}
+        select userLevel
+        from ink_book.group_user
+        where userId = #{user}
+          and groupId = #{group}
     </select>
     <insert id="insertMem">
-        insert into ink_book.group_user(ink_book.group_user.groupId, ink_book.group_user.userId, ink_book.group_user.userLevel)
-        VALUES (#{group.groupId}, #{user}, 1)
+        insert into ink_book.group_user(ink_book.group_user.groupId, ink_book.group_user.userId,
+                                        ink_book.group_user.userLevel)
+        VALUES (#{group}, #{user}, 1)
     </insert>
     <update id="setAdmin">
-        update ink_book.group_user set ink_book.group_user.userLevel = 2
-        where ink_book.group_user.groupId=#{group.groupId} and ink_book.group_user.userId=#{user}
+        update ink_book.group_user
+        set ink_book.group_user.userLevel = 2
+        where ink_book.group_user.groupId = #{group}
+          and ink_book.group_user.userId = #{user}
     </update>
     <delete id="deleteMem">
-        delete from ink_book.group_user where ink_book.group_user.groupId=#{group.groupId} and ink_book.group_user.userId=#{user}
+        delete
+        from ink_book.group_user
+        where ink_book.group_user.groupId = #{group}
+          and ink_book.group_user.userId = #{user}
+    </delete>
+    <delete id="deleteGroup">
+        delete
+        from ink_book.group_user
+        where ink_book.group_user.groupId = #{groupId}
     </delete>
     <insert id="insertGroup">
-        insert into ink_book.group_user VALUES (#{groupId}, #{userId}, 3)
+        insert into ink_book.group_user
+        VALUES (#{groupId}, #{userId}, 3)
     </insert>
 </mapper>

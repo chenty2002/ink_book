@@ -7,7 +7,6 @@ public class Group {
     private String groupName;
     private LocalDateTime groupCreateTime;
     private String groupProfile;
-    private User founder;
 
     @Override
     public String toString() {
@@ -15,8 +14,7 @@ public class Group {
                 "groupId=" + groupId +
                 ", groupName='" + groupName + '\'' +
                 ", groupCreateTime=" + groupCreateTime +
-                ", groupProfile='" + groupProfile + '\'' +
-                ", founder=" + founder +
+                ", groupProfile='" + groupProfile +
                 '}';
     }
 
@@ -50,13 +48,5 @@ public class Group {
 
     public void setGroupProfile(String groupProfile) {
         this.groupProfile = groupProfile;
-    }
-
-    public User getFounder() {
-        return founder;
-    }
-
-    public void setFounder(User founder) {
-        this.founder = founder;
     }
 }

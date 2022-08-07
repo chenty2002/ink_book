@@ -6,30 +6,31 @@
 <mapper namespace="com.summerProject.ink_book.Mapper.ProjectMapper">
     <insert id="insertProject" parameterType="com.summerProject.ink_book.Entity.Project" useGeneratedKeys="true"
             keyProperty="projectId">
-        insert into ink_book.projects(ink_book.projects.projectName, ink_book.projects.projectDescription)
-        VALUES (#{projectName}, #{projectDescription})
+        insert into projects(projectName, projectDescription, deleted)
+        VALUES (#{projectName}, #{projectDescription}, 0)
     </insert>
     <update id="deleteProjectById">
-        update ink_book.projects
-        set deleted=1
-        where ink_book.projects.projectId = #{projectId}
+        update projects
+        set deleted = deleted + 1
+        where projects.projectId = #{projectId}
     </update>
     <select id="selectProjectById" resultType="com.summerProject.ink_book.Entity.Project">
         select *
-        from ink_book.projects
+        from projects
         where projectId = #{projectId}
+          and deleted = 0
     </select>
     <update id="modifyProject" parameterType="com.summerProject.ink_book.Entity.Project">
         update projects
         <set>
             <if test="projectName != null">
-                projectName = #{projectName}
+                projectName = #{projectName},
             </if>
             <if test="projectDescription != null">
                 projectDescription = #{projectDescription}
             </if>
         </set>
-        where projectId = #{projectId}
+        where projectId = #{projectId} and deleted = 0
     </update>
     <select id="selectProjectByUser" resultType="com.summerProject.ink_book.Entity.Project">
         select *

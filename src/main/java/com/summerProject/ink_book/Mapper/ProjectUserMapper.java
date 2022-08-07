@@ -12,4 +12,6 @@ public interface ProjectUserMapper {
     List<User> selectProjectUser(Integer projectId);
 
     Integer deleteProjectUser(Integer projectId, Integer userId);
+
+    Integer deleteProject(Integer projectId);
 }

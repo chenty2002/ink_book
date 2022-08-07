@@ -1,16 +1,17 @@
 package com.summerProject.ink_book.Service;
 
 import com.summerProject.ink_book.Entity.Project;
+import com.summerProject.ink_book.Entity.User;
 import com.summerProject.ink_book.Utils.Result;
 
 import java.util.List;
 
 public interface ProjectService {
-    Result<Project> NewProject(Project project);
+    Result<Project> newProject(Project project, Integer userId);
 
-    Result<Project> DeleteProject(Integer projectId);
+    Result<String> deleteProject(Integer projectId);
 
-    Result<Project> ModifyProject(Project project);
+    Result<String> modifyProject(Project project);
 
     Result<Project> getProjectInfo(Integer projectId);
 
@@ -19,4 +20,10 @@ public interface ProjectService {
     Result<List<Project>> getGroupProject(Integer id, Integer deleted);
 
     Result<List<Project>> getLeaderProject(Integer id, Integer deleted);
+
+    Result<String> NewProjectUser(Integer projectId, Integer userId);
+
+    Result<List<User>> getProjectUser(Integer pid);
+
+    Result<String> deleteProjectUser(Integer pid, Integer uid);
 }

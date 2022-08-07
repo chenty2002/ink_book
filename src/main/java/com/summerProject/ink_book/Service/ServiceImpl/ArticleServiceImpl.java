@@ -17,9 +17,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Result<String> saveArticle(Article article) {
+    public Result<Article> saveArticle(Article article) {
         if (articleMapper.insertArticle(article) > 0) {
-            return Result.success("Publish success", "");
+            return Result.success("Publish success", article);
         } else return Result.fail("Publish failed");
     }
 

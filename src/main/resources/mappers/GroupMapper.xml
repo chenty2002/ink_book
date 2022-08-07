@@ -4,6 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.summerProject.ink_book.Mapper.GroupMapper">
+    <delete id="deleteGroup">
+        delete
+        from ink_book.`groups`
+        where ink_book.`groups`.groupId = #{groupId}
+    </delete>
     <select id="selectGroupById" resultType="com.summerProject.ink_book.Entity.Group">
         select *
         from ink_book.`groups`
@@ -47,14 +52,14 @@
           and b.userLevel = 3
         limit #{page}, #{size}
     </select>
-    <select id="selectUserByGroup">
+    <select id="selectUserByGroup" resultType="com.summerProject.ink_book.Entity.User">
         select *
         from users a,
              group_user b
         where a.userId = b.userId
           and b.groupId = #{id}
     </select>
-    <select id="selectUserByGroupPage">
+    <select id="selectUserByGroupPage" resultType="com.summerProject.ink_book.Entity.User">
         select *
         from users a,
              group_user b
@@ -62,7 +67,7 @@
           and b.groupId = #{id}
         limit #{page}, #{size}
     </select>
-    <select id="selectUserByGroupLevel">
+    <select id="selectUserByGroupLevel" resultType="com.summerProject.ink_book.Entity.User">
         select *
         from users a,
              group_user b
@@ -74,7 +79,7 @@
         update ink_book.`groups`
         <set>
             <if test="groupName != null">
-                groupName = #{groupName}
+                groupName = #{groupName},
             </if>
             <if test="groupProfile != null">
                 groupProfile = #{groupProfile}

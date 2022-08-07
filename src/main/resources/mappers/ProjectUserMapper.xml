@@ -21,4 +21,11 @@
         where ink_book.project_user.projectId = #{projectId}
           and ink_book.project_user.userId = #{userId}
     </delete>
+    <delete id="deleteProject">
+        delete
+        from project_user
+        where projectId in
+              (select projectId from projects where deleted >= 2)
+          and projectId = #{projectId}
+    </delete>
 </mapper>
