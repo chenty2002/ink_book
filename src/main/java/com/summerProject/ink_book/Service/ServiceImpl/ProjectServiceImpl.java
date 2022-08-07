@@ -1,11 +1,12 @@
 package com.summerProject.ink_book.Service.ServiceImpl;
 
 import com.summerProject.ink_book.Entity.Project;
-import com.summerProject.ink_book.Entity.User;
+import com.summerProject.ink_book.Mapper.GroupProjectMapper;
 import com.summerProject.ink_book.Mapper.ProjectMapper;
-import com.summerProject.ink_book.Mapper.ProjectUserMapper;
+import com.summerProject.ink_book.Service.GroupService;
 import com.summerProject.ink_book.Service.ProjectService;
 import com.summerProject.ink_book.Utils.Result;
+import com.summerProject.ink_book.Utils.UserLevel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,17 +14,22 @@ import java.util.List;
 @Service
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper projectMapper;
-    private final ProjectUserMapper projectUserMapper;
+    private final GroupProjectMapper groupProjectMapper;
 
-    public ProjectServiceImpl(ProjectMapper projectMapper, ProjectUserMapper projectUserMapper) {
+    private final GroupService groupService;
+
+    public ProjectServiceImpl(ProjectMapper projectMapper, GroupProjectMapper groupProjectMapper, GroupService groupService) {
         this.projectMapper = projectMapper;
-        this.projectUserMapper = projectUserMapper;
+        this.groupProjectMapper = groupProjectMapper;
+        this.groupService = groupService;
     }
 
     @Override
-    public Result<Project> newProject(Project project, Integer userId) {
+    public Result<Project> newProject(Project project, Integer userId, Integer groupId) {
+        if (!groupService.isAdmin(groupId, userId, UserLevel.ADMINISTRATOR.getCode()))
+            return Result.fail("Unauthorized");
         if (projectMapper.insertProject(project) > 0) {//新增项目成功
-            if (projectUserMapper.insertProjectUser(project.getProjectId(), userId) > 0) {
+            if (groupProjectMapper.insertProject(project.getProjectId(), groupId) > 0) {
                 project.setDeleted(0);
                 return Result.success("success", project);
             }
@@ -32,9 +38,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result<String> deleteProject(Integer projectId) {
+    public Result<String> deleteProject(Integer userId, Integer groupId, Integer projectId) {
+        if (!groupService.isAdmin(groupId, userId, UserLevel.ADMINISTRATOR.getCode()))
+            return Result.fail("Unauthorized");
         if (projectMapper.deleteProjectById(projectId) > 0) {
-            projectUserMapper.deleteProject(projectId);
+            groupProjectMapper.deleteProjectById(projectId);
             return Result.success("delete project success", "");
         }
         return Result.fail("delete project Failure");
@@ -57,40 +65,13 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result<List<Project>> getUserProject(Integer id, Integer deleted) {
-        List<Project> projects = projectMapper.selectProjectByUser(id, deleted);
-        return Result.success("All Projects of One User", projects);
-    }
-
-    @Override
     public Result<List<Project>> getGroupProject(Integer id, Integer deleted) {
         List<Project> projects = projectMapper.selectProjectByGroup(id, deleted);
-        return Result.success("All Projects of One Group", projects);
+        return Result.success("All Projects of a Group", projects);
     }
 
     @Override
-    public Result<List<Project>> getLeaderProject(Integer id, Integer deleted) {
-        List<Project> projects = projectMapper.selectProjectByLeader(id, deleted);
-        return Result.success("All Projects of One Leader", projects);
-    }
-
-    @Override
-    public Result<String> NewProjectUser(Integer projectId, Integer userId) {
-        if (projectUserMapper.insertProjectUser(projectId, userId) > 0)
-            return Result.success("New User Joined Project", "");
-        return Result.fail("New User not Joined Project");
-    }
-
-    @Override
-    public Result<List<User>> getProjectUser(Integer pid) {
-        List<User> users = projectUserMapper.selectProjectUser(pid);
-        return Result.success("All Project Users", users);
-    }
-
-    @Override
-    public Result<String> deleteProjectUser(Integer pid, Integer uid) {
-        if (projectUserMapper.deleteProjectUser(pid, uid) > 0)
-            return Result.success("Project User Deleted", "");
-        return Result.fail("Project User not Deleted");
+    public Result<List<Project>> getProjectByCons(String word) {
+        return Result.success("All Fitting Projects", projectMapper.selectProjectByCons("%" + word + "%"));
     }
 }

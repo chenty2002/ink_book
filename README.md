@@ -4,77 +4,96 @@
 
 ## 数据库表
 
-create table group_user
-(
+CREATE TABLE `article` (
 
-    groupId   int not null,
-    
-    userId    int not null,
-    
-    userLevel int null,
-    
-    primary key (groupId, userId)
+`articleId` int NOT NULL AUTO_INCREMENT,
 
-)
+`title` varchar(100) DEFAULT NULL,
 
-create table `groups`
+`author` int DEFAULT NULL,
 
-(
+`content` longtext,
 
-    groupId         int auto_increment
-    
-        primary key,
-        
-    groupName       varchar(255) null,
-    
-    groupCreateTime datetime     null,
-    
-    groupProfile    varchar(255) null
-    
-)
+PRIMARY KEY (`articleId`)
 
-create table project_user
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3
 
-(
+***
 
-    projectId int not null,
-    
-    userId    int not null,
-    
-    primary key (projectId, userId)
-    
-)
+CREATE TABLE `group_project` (
 
-create table projects
+`projectId` int NOT NULL,
 
-(
+`groupId` int NOT NULL,
 
-    projectId          int auto_increment
-    
-        primary key,
-        
-    projectName        varchar(255) null,
-    
-    projectDescription varchar(255) null
-    
-)
+PRIMARY KEY (`projectId`,`groupId`) USING BTREE
 
-create table users
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC
 
-(
+***
 
-    userId       int auto_increment
-    
-        primary key,
-        
-    userName     varchar(255) null,
-    
-    password     varchar(255) null,
-    
-    userProfile  varchar(255) null,
-    
-    userRealName varchar(255) null,
-    
-    userEmail    varchar(255) null
-    
-)
+CREATE TABLE `group_user` (
+
+`groupId` int NOT NULL,
+
+`userId` int NOT NULL,
+
+`userLevel` int DEFAULT NULL,
+
+PRIMARY KEY (`groupId`,`userId`) USING BTREE
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC
+
+***
+
+CREATE TABLE `groups` (
+
+`groupId` int NOT NULL AUTO_INCREMENT,
+
+`groupName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`groupCreateTime` datetime DEFAULT NULL,
+
+`groupProfile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+PRIMARY KEY (`groupId`) USING BTREE
+
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC
+
+***
+
+CREATE TABLE `projects` (
+
+`projectId` int NOT NULL AUTO_INCREMENT,
+
+`projectName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`projectDescription` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`deleted` int NOT NULL DEFAULT '0',
+
+PRIMARY KEY (`projectId`) USING BTREE
+
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC
+
+***
+
+CREATE TABLE `users` (
+
+`userId` int NOT NULL AUTO_INCREMENT,
+
+`userName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`userProfile` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`userRealName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+`userEmail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+
+PRIMARY KEY (`userId`) USING BTREE
+
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC
+
+

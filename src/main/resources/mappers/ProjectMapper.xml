@@ -32,33 +32,18 @@
         </set>
         where projectId = #{projectId} and deleted = 0
     </update>
-    <select id="selectProjectByUser" resultType="com.summerProject.ink_book.Entity.Project">
-        select *
-        from projects a,
-             project_user b
-        where a.projectId = b.projectId
-          and b.userId = #{id}
-          and a.deleted = #{deleted}
-    </select>
     <select id="selectProjectByGroup" resultType="com.summerProject.ink_book.Entity.Project">
         select *
         from projects a,
-             project_user b,
-             group_user c
+             group_project b
         where a.projectId = b.projectId
-          and b.userId = c.userId
-          and c.groupId = #{id}
           and a.deleted = #{deleted}
+          and b.groupId = #{id}
     </select>
-    <select id="selectProjectByLeader" resultType="com.summerProject.ink_book.Entity.Project">
+    <select id="selectProjectByCons" resultType="com.summerProject.ink_book.Entity.Project">
         select *
-        from projects a,
-             project_user b,
-             group_user c
-        where a.projectId = b.projectId
-          and b.userId = c.userId
-          and c.groupId = #{id}
-          and c.userLevel = 3
-          and a.deleted = #{deleted}
+        from projects
+        where projectName like #{word}
+           or projectDescription like #{word}
     </select>
 </mapper>

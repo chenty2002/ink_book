@@ -15,10 +15,7 @@ public interface ProjectMapper {
 
     Integer modifyProject(Project project);
 
-    List<Project> selectProjectByUser(Integer id, Integer deleted);
-
     List<Project> selectProjectByGroup(Integer id, Integer deleted);
 
-    List<Project> selectProjectByLeader(Integer id, Integer deleted);
-
+    List<Project> selectProjectByCons(String word);
 }

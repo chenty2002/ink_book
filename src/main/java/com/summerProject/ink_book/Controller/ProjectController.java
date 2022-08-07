@@ -2,7 +2,6 @@ package com.summerProject.ink_book.Controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.summerProject.ink_book.Entity.Project;
-import com.summerProject.ink_book.Entity.User;
 import com.summerProject.ink_book.Service.ProjectService;
 import com.summerProject.ink_book.Utils.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ public class ProjectController {
         url: /newProject?userId=
         请求体参数
         {
+            "groupId": ,
             "projectName": ,
             "projectDescription":
         }
@@ -37,17 +37,22 @@ public class ProjectController {
         Project project = new Project();
         project.setProjectName(object.getString("projectName"));
         project.setProjectDescription(object.getString("projectDescription"));
-        return projectService.newProject(project, userid);
+        return projectService.newProject(project, userid, object.getInteger("groupId"));
     }
 
-    // 删除项目 DELETE url?传参
+    // 删除项目 DELETE url?传用户id 请求体传团队id和项目id
     /*
-        url: /deleteProject?projectId=
+        url: /deleteProject?userId=
+        请求体参数
+        {
+            "groupId": ,
+            "projectId":
+        }
      */
     @DeleteMapping("/deleteProject")
-    public Result<String> deleteProject(@RequestParam("projectId") Integer projectId) {
+    public Result<String> deleteProject(@RequestParam("userId") Integer userId, @RequestBody JSONObject object) {
         log.info("[ProjectController.DeleteProject] --- requesting delete a project");
-        return projectService.deleteProject(projectId);
+        return projectService.deleteProject(userId, object.getInteger("groupId"), object.getInteger("projectId"));
     }
 
     // 编辑项目信息 POST 请求体传参
@@ -58,6 +63,7 @@ public class ProjectController {
             "projectId": ,
             "projectName": , (可选)
             "projectDescription": (可选)
+        }
      */
     @PostMapping("/modifyProject")
     public Result<String> modifyProject(@RequestBody JSONObject object) {
@@ -80,64 +86,34 @@ public class ProjectController {
         return projectService.getProjectInfo(projectId);
     }
 
-    // 查询该用户参与的所有(未删除)项目信息 GET url?传参
+    // 查询团队所有项目 GET url?传参
     /*
-        url: /userProjectInfo?userId=
+        url: /groupProject?groupId=
      */
-    @GetMapping("/userProjectInfo")
-    public Result<List<Project>> userAllProjects(@RequestParam("userId") Integer userId) {
-        log.info("[ProjectController.userAllProjects] --- requesting all projects of a user");
-        return projectService.getUserProject(userId, 0);
+    @GetMapping("/groupProject")
+    public Result<List<Project>> groupProject(@RequestParam("groupId") Integer groupId) {
+        log.info("[ProjectController.groupProject] --- requesting all projects of a group");
+        return projectService.getGroupProject(groupId, 0);
     }
 
-    // 查询回收站内该用户参与的所有项目信息 GET url?传参
+    // 查询团队回收站项目 GET url?传参
     /*
-        url: /deletedUserProjectInfo?userId=
+        url: /groupDeletedProject?groupId=
      */
-    @GetMapping("/deletedUserProjectInfo")
-    public Result<List<Project>> deletedUserProjects(@RequestParam("userId") Integer userId) {
-        log.info("[ProjectController.deletedUserProjects] --- requesting all deleted projects of a user");
-        return projectService.getUserProject(userId, 1);
+    @GetMapping("/groupDeletedProject")
+    public Result<List<Project>> groupDeletedProject(@RequestParam("groupId") Integer groupId) {
+        log.info("[ProjectController.groupDeletedProject] --- requesting all deleted projects of a group");
+        return projectService.getGroupProject(groupId, 1);
     }
 
-    // 用户加入项目 POST 请求体传参
+    // 根据关键词搜索项目 GET url?传参
     /*
-        url: /newUser
-        请求体参数
-        {
-            "userId": ,
-            "projectId":
-        }
+        url: /search?word=
      */
-    @PostMapping("/newUser")
-    public Result<String> newProjectUser(@RequestBody JSONObject object) {
-        log.info("[ProjectController.newProjectUser] --- requesting add a new user to a project");
-        return projectService.NewProjectUser(object.getInteger("projectId"), object.getInteger("userId"));
-    }
-
-    // 查询项目成员 GET url?传projectId
-    /*
-        url: /allUser?projectId=
-     */
-    @GetMapping("/allUser")
-    public Result<List<User>> allProjectUser(@RequestParam("projectId") Integer pid) {
-        log.info("[ProjectController.allProjectUser] --- requesting all users of a project");
-        return projectService.getProjectUser(pid);
-    }
-
-    // 删除项目成员 POST url?传pid 请求体传uid
-    /*
-        url: /deleteUser?projectId=
-        请求体参数
-        {
-            "userId":
-        }
-     */
-    @DeleteMapping("/deleteUser")
-    public Result<String> deleteProjectUser(@RequestParam("projectId") Integer pid, @RequestBody JSONObject object) {
-        log.info("[ProjectController.deleteProjectUser] --- requesting delete a member of a project");
-        Integer uid = object.getInteger("userId");
-        return projectService.deleteProjectUser(pid, uid);
+    @GetMapping("/search")
+    public Result<List<Project>> searchProject(@RequestParam("word") String word) {
+        log.info("[ProjectController.searchProject] --- requesting search a project with words");
+        return projectService.getProjectByCons(word);
     }
 
 }
