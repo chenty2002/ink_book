@@ -8,13 +8,13 @@ import java.util.List;
 public interface ArticleService {
     Result<Article> saveArticle(Article article);
 
-    Result<Article> getArticleById(int id);
+    Result<Article> getArticleById(Integer id);
 
     Result<String> deleteArticleById(Integer id);
-
-    Result<List<Article>> getUserArticle(Integer id);
 
     Result<List<Article>> getGroupArticle(Integer id);
 
     Result<String> updateArticle(Article article);
+
+    Result<String> deleteArticleByGroup(Integer groupId);
 }

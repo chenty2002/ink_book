@@ -19,9 +19,9 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    // 保存文章 POST url?传用户id 请求体传文章
+    // 保存文章 POST url?传团队id 请求体传文章
     /*
-        url: /save?id=
+        url: /save?groupId=
         请求体参数
         {
             "title": ,
@@ -29,11 +29,11 @@ public class ArticleController {
         }
      */
     @PostMapping("/save")
-    public Result<Article> saveArticle(@RequestParam("id") Integer id, @RequestBody JSONObject object) {
+    public Result<Article> saveArticle(@RequestParam("groupId") Integer id, @RequestBody JSONObject object) {
         log.info("[ArticleController.saveArticle] --- requesting creating an article");
         Article article = new Article();
         article.setTitle(object.getString("title"));
-        article.setAuthor(id);
+        article.setGroupId(id);
         article.setContent(object.getString("content"));
         return articleService.saveArticle(article);
     }
@@ -56,16 +56,6 @@ public class ArticleController {
     public Result<String> deleteArticle(@RequestParam("id") Integer id) {
         log.info("[ArticleController.deleteArticle] --- requesting deleting an article");
         return articleService.deleteArticleById(id);
-    }
-
-    // 获取该用户的所有文章 GET url?传参
-    /*
-        url: /userAll?userId=
-     */
-    @GetMapping("/userAll")
-    public Result<List<Article>> getAllUserArticle(@RequestParam("userId") Integer id) {
-        log.info("[ArticleController.getAllUserArticle] --- requesting all articles of a User");
-        return articleService.getUserArticle(id);
     }
 
     // 获取团队的所有文章 GET url?传参
@@ -96,5 +86,15 @@ public class ArticleController {
         article.setTitle(object.getString("title"));
         article.setContent(object.getString("content"));
         return articleService.updateArticle(article);
+    }
+
+    // 删除团队所有文章 DELETE url?传参
+    /*
+        url: /deleteGroup?groupId=
+     */
+    @DeleteMapping("/deleteGroup")
+    public Result<String> deleteGroupArticle(@RequestParam("groupId") Integer groupId) {
+        log.info("[ArticleController.deleteGroupArticle] --- requesting delete all articles of a group");
+        return articleService.deleteArticleByGroup(groupId);
     }
 }

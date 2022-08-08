@@ -3,8 +3,8 @@
 <mapper namespace="com.summerProject.ink_book.Mapper.ArticleMapper">
     <insert id="insertArticle" parameterType="com.summerProject.ink_book.Entity.Article" useGeneratedKeys="true"
             keyProperty="articleId">
-        insert into article (title, author, content)
-        values (#{title}, #{author}, #{content});
+        insert into article (title, groupId, content)
+        values (#{title}, #{groupId}, #{content});
     </insert>
 
     <select id="selectArticleById" resultType="com.summerProject.ink_book.Entity.Article">
@@ -18,19 +18,16 @@
         from article
         where articleId = #{id}
     </delete>
-
-    <select id="selectArticleByUser" resultType="com.summerProject.ink_book.Entity.Article">
-        select *
+    <delete id="deleteGroupArticle">
+        delete
         from article
-        where author = #{id}
-    </select>
+        where groupId = #{groupId}
+    </delete>
 
     <select id="selectArticleByGroup" resultType="com.summerProject.ink_book.Entity.Article">
         select *
-        from article,
-             group_user
-        where author = userId
-          and groupId = #{id}
+        from article
+        where groupId = #{id}
     </select>
 
     <update id="updateArticle" parameterType="com.summerProject.ink_book.Entity.Article">

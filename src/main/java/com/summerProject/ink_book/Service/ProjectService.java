@@ -14,7 +14,7 @@ public interface ProjectService {
 
     Result<Project> getProjectInfo(Integer projectId);
 
-    Result<List<Project>> getGroupProject(Integer id, Integer deleted);
+    Result<List<Project>> getGroupProject(Integer id, Integer deleted, String sort);
 
-    Result<List<Project>> getProjectByCons(String word);
+    Result<List<Project>> getProjectByCons(Integer groupId, String word);
 }

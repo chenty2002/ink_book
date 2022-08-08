@@ -9,6 +9,7 @@ import com.summerProject.ink_book.Utils.Result;
 import com.summerProject.ink_book.Utils.UserLevel;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -65,13 +66,29 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result<List<Project>> getGroupProject(Integer id, Integer deleted) {
+    public Result<List<Project>> getGroupProject(Integer id, Integer deleted, String sort) {
         List<Project> projects = projectMapper.selectProjectByGroup(id, deleted);
+        switch (sort) {
+            case "":
+                break;
+            case "time1":
+                projects.sort(Comparator.comparing(Project::getCreateTime));
+                break;
+            case "time2":
+                projects.sort((p1, p2) -> p2.getCreateTime().compareTo(p1.getCreateTime()));
+                break;
+            case "name1":
+                projects.sort(Comparator.comparing(Project::getProjectName));
+                break;
+            case "name2":
+                projects.sort(((p1, p2) -> p2.getProjectName().compareTo(p1.getProjectName())));
+                break;
+        }
         return Result.success("All Projects of a Group", projects);
     }
 
     @Override
-    public Result<List<Project>> getProjectByCons(String word) {
-        return Result.success("All Fitting Projects", projectMapper.selectProjectByCons("%" + word + "%"));
+    public Result<List<Project>> getProjectByCons(Integer groupId, String word) {
+        return Result.success("All Fitting Projects", projectMapper.selectProjectByCons(groupId, "%" + word + "%"));
     }
 }

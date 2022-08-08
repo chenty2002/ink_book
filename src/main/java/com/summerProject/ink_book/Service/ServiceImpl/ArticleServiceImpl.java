@@ -24,7 +24,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Result<Article> getArticleById(int id) {
+    public Result<Article> getArticleById(Integer id) {
         Article article = articleMapper.selectArticleById(id);
         return Result.success("Article Info", article);
     }
@@ -34,12 +34,6 @@ public class ArticleServiceImpl implements ArticleService {
         if (articleMapper.deleteArticleById(id) > 0) {
             return Result.success("Article Deleted", "");
         } else return Result.fail("Article not Deleted");
-    }
-
-    @Override
-    public Result<List<Article>> getUserArticle(Integer id) {
-        List<Article> articles = articleMapper.selectArticleByUser(id);
-        return Result.success("All Articles of a user", articles);
     }
 
     @Override
@@ -55,7 +49,11 @@ public class ArticleServiceImpl implements ArticleService {
         else return Result.fail("Article not Modified");
     }
 
-
+    @Override
+    public Result<String> deleteArticleByGroup(Integer groupId) {
+        articleMapper.deleteGroupArticle(groupId);
+        return Result.success("Group Article Deleted", "");
+    }
 }
 
 

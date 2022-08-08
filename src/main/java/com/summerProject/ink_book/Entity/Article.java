@@ -4,7 +4,7 @@ package com.summerProject.ink_book.Entity;
 public class Article {
     private int articleId;
     private String title;
-    private Integer author;
+    private Integer groupId;
     private String content;
 
     public void setArticleId(int articleId) {
@@ -15,8 +15,8 @@ public class Article {
         this.title = title;
     }
 
-    public void setAuthor(Integer author) {
-        this.author = author;
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
     }
 
     public void setContent(String content) {
@@ -31,8 +31,8 @@ public class Article {
         return title;
     }
 
-    public Integer getAuthor() {
-        return author;
+    public Integer getGroupId() {
+        return groupId;
     }
 
     public String getContent() {

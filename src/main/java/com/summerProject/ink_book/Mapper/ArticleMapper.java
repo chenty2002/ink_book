@@ -13,9 +13,9 @@ public interface ArticleMapper {
 
     int deleteArticleById(int id);
 
-    List<Article> selectArticleByUser(Integer id);
-
     List<Article> selectArticleByGroup(Integer id);
 
     int updateArticle(Article article);
+
+    int deleteGroupArticle(Integer groupId);
 }

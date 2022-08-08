@@ -6,8 +6,8 @@
 <mapper namespace="com.summerProject.ink_book.Mapper.ProjectMapper">
     <insert id="insertProject" parameterType="com.summerProject.ink_book.Entity.Project" useGeneratedKeys="true"
             keyProperty="projectId">
-        insert into projects(projectName, projectDescription, deleted)
-        VALUES (#{projectName}, #{projectDescription}, 0)
+        insert into projects(projectName, projectDescription, deleted, createTime)
+        VALUES (#{projectName}, #{projectDescription}, 0, #{createTime})
     </insert>
     <update id="deleteProjectById">
         update projects
@@ -42,8 +42,11 @@
     </select>
     <select id="selectProjectByCons" resultType="com.summerProject.ink_book.Entity.Project">
         select *
-        from projects
-        where projectName like #{word}
-           or projectDescription like #{word}
+        from projects a,
+             group_project b
+        where a.projectId = b.projectId
+          and b.groupId = #{groupId}
+          and (projectName like #{word}
+            or projectDescription like #{word})
     </select>
 </mapper>

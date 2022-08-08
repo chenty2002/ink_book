@@ -1,18 +1,20 @@
 package com.summerProject.ink_book.Entity;
 
+import java.time.LocalDateTime;
+
 public class Project {
     private Integer projectId;
     private String projectName;
     private String projectDescription;
     private Integer deleted;
+    private LocalDateTime createTime;
 
-    @Override
-    public String toString() {
-        return "Project{" +
-                "projectId=" + projectId +
-                ", projectName='" + projectName + '\'' +
-                ", projectDescription='" + projectDescription + '\'' +
-                '}';
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getProjectId() {

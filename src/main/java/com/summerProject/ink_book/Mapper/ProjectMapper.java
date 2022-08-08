@@ -17,5 +17,5 @@ public interface ProjectMapper {
 
     List<Project> selectProjectByGroup(Integer id, Integer deleted);
 
-    List<Project> selectProjectByCons(String word);
+    List<Project> selectProjectByCons(Integer groupId, String word);
 }
