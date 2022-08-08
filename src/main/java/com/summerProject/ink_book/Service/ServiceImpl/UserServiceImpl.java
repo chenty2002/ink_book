@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -44,5 +45,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Result<User> getInfo(Integer id) {
         return Result.success("User Info", userMapper.getUser(id));
+    }
+
+    @Override
+    public Result<List<User>> searchUser(String word) {
+        return Result.success("Search Result", userMapper.selectUserByKeyword(word));
     }
 }

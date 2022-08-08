@@ -2,8 +2,11 @@ package com.summerProject.ink_book.Controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.summerProject.ink_book.Entity.Group;
+import com.summerProject.ink_book.Entity.InviteCode;
 import com.summerProject.ink_book.Entity.User;
 import com.summerProject.ink_book.Service.GroupService;
+import com.summerProject.ink_book.Service.InviteCodeService;
+import com.summerProject.ink_book.Service.UserService;
 import com.summerProject.ink_book.Utils.Result;
 import com.summerProject.ink_book.Utils.UserLevel;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +19,15 @@ import java.util.List;
 @RequestMapping("/group")
 public class GroupController {
 
+    private final UserService userService;
     private final GroupService groupservice;
+    private final InviteCodeService inviteCodeService;
 
-    public GroupController(GroupService groupservice) {
+    public GroupController(UserService userService, GroupService groupservice, InviteCodeService inviteCodeService) {
+        this.userService = userService;
         this.groupservice = groupservice;
+        this.inviteCodeService = inviteCodeService;
     }
-
 
     // 创建团队 POST url?传用户id 请求体传团队信息
     /*
@@ -41,27 +47,44 @@ public class GroupController {
 
     }
 
-    // 用户加入团队 POST url?传userId 请求体传加入的用户id和groupId
+    // 用户加入团队 POST url?传邀请码 请求体传用户id
     /*
-        url: /memJoin?userId=
+        url: /memJoin?code=
         请求体参数
         {
-            "userId": ,
-            "groupId":
+            "userId":
         }
      */
     @PostMapping("/memJoin")
-    public Result<String> memJoin(@RequestParam("userId") Integer adminId, @RequestBody JSONObject object) {
-        log.info("[GroupController.memJoin] --- requesting join a group");
+    public Result<String> memJoin(@RequestParam("code") String code, @RequestBody JSONObject object) {
+        log.info("[GroupController.memJoin] --- requesting join a group through code");
         Integer user = object.getInteger("userId");
-        Integer group = object.getInteger("groupId");
-        if (groupservice.isAdmin(group, adminId, UserLevel.ADMINISTRATOR.getCode())) {
-            log.info("[GroupController.createGroup] --- current user IS an administrator");
-            return groupservice.memJoin(group, user);
-        } else {
-            log.info("[GroupController.createGroup] --- current user IS NOT an administrator");
-            return Result.fail("Unauthorized");
+        Integer groupId = inviteCodeService.validateCode(code);
+        if (groupId == null) {
+            log.info("[GroupController.memJoin] --- code invalid");
+            return Result.fail("Invalid Code");
         }
+        log.info("[GroupController.memJoin] --- code valid");
+        return groupservice.memJoin(groupId, user);
+    }
+
+    // 团队管理员获得邀请码 POST url?传用户id 请求体传团队id
+    /*
+        url: /invite?userId=
+        请求体参数
+        {
+            "groupId":
+        }
+     */
+    @PostMapping("/invite")
+    public Result<InviteCode> getInviteCode(@RequestParam("userId") Integer adminId, @RequestBody JSONObject object) {
+        log.info("[GroupController.getInviteCode] --- requesting an invite code");
+        Integer groupId = object.getInteger("groupId");
+        if (groupservice.isAdmin(groupId, adminId, UserLevel.ADMINISTRATOR.getCode())) {
+            InviteCode inviteCode = inviteCodeService.getInviteCode(groupId);
+            return Result.success("Invite Code", inviteCode);
+        }
+        return Result.fail("Unauthorized");
     }
 
     // 修改团队信息 POST url?传userId 请求体传团队信息
@@ -191,5 +214,16 @@ public class GroupController {
             log.info("[GroupController.deleteGroup] --- current user IS NOT the founder");
             return Result.fail("Unauthorized");
         }
+    }
+
+
+    // 按关键词搜索用户 可按邮箱准确搜索或在用户名，真实姓名和简介中搜索关键词 GET url?传关键词
+    /*
+        url: /search?word=
+     */
+    @GetMapping("/search")
+    public Result<List<User>> searchUser(@RequestParam("word") String word) {
+        log.info("[GroupController.searchUser] --- searching a user by keyword");
+        return userService.searchUser(word);
     }
 }

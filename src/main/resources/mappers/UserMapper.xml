@@ -40,4 +40,12 @@
         from users
         where userId = #{id}
     </select>
+    <select id="selectUserByKeyword" resultType="com.summerProject.ink_book.Entity.User">
+        select *
+        from ink_book.users
+        where userEmail = #{word}
+           or userName like concat('%', #{word}, '%')
+           or userRealName like concat('%', #{word}, '%')
+           or userProfile like concat('%', #{word}, '%')
+    </select>
 </mapper>

@@ -21,4 +21,5 @@ public interface UserMapper {
 
     User getUser(Integer id);
 
+    List<User> selectUserByKeyword(String word);
 }

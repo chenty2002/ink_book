@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.summerProject.ink_book.Mapper.InviteCodeMapper">
+    <insert id="insertCode" parameterType="com.summerProject.ink_book.Entity.InviteCode">
+        insert into invite_code (groupId, inviteCode, expireTime)
+        VALUES (#{groupId}, #{inviteCode}, #{expireTime})
+    </insert>
+    <update id="updateCode" parameterType="com.summerProject.ink_book.Entity.InviteCode">
+        update invite_code
+        set inviteCode = #{inviteCode},
+            expireTime = #{expireTime}
+        where groupId = #{groupId}
+    </update>
+    <select id="selectCode" resultType="com.summerProject.ink_book.Entity.InviteCode">
+        select *
+        from invite_code
+        where groupId = #{groupId}
+    </select>
+    <select id="getGroupId" resultType="java.lang.Integer">
+        select groupId
+        from invite_code
+        where inviteCode = #{code}
+          and expireTime > now()
+    </select>
+</mapper>
