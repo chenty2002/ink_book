@@ -47,16 +47,16 @@ public class GroupController {
 
     }
 
-    // 用户加入团队 POST url?传邀请码 请求体传用户id
+    // 邀请码邀请用户加入团队 POST url?传邀请码 请求体传用户id
     /*
-        url: /memJoin?code=
+        url: /codeJoin?code=
         请求体参数
         {
             "userId":
         }
      */
-    @PostMapping("/memJoin")
-    public Result<String> memJoin(@RequestParam("code") String code, @RequestBody JSONObject object) {
+    @PostMapping("/codeJoin")
+    public Result<String> codeJoin(@RequestParam("code") String code, @RequestBody JSONObject object) {
         log.info("[GroupController.memJoin] --- requesting join a group through code");
         Integer user = object.getInteger("userId");
         Integer groupId = inviteCodeService.validateCode(code);
@@ -66,6 +66,29 @@ public class GroupController {
         }
         log.info("[GroupController.memJoin] --- code valid");
         return groupservice.memJoin(groupId, user);
+    }
+
+    // 管理员邀请用户加入团队 POST url?传userId 请求体传加入的用户id和groupId
+    /*
+        url: /inviteJoin?userId=
+        请求体参数
+        {
+            "userId": ,
+            "groupId":
+        }
+     */
+    @PostMapping("/inviteJoin")
+    public Result<String> inviteJoin(@RequestParam("userId") Integer adminId, @RequestBody JSONObject object) {
+        log.info("[GroupController.memJoin] --- requesting join a group");
+        Integer user = object.getInteger("userId");
+        Integer group = object.getInteger("groupId");
+        if (groupservice.isAdmin(group, adminId, UserLevel.ADMINISTRATOR.getCode())) {
+            log.info("[GroupController.createGroup] --- current user IS an administrator");
+            return groupservice.memJoin(group, user);
+        } else {
+            log.info("[GroupController.createGroup] --- current user IS NOT an administrator");
+            return Result.fail("Unauthorized");
+        }
     }
 
     // 团队管理员获得邀请码 POST url?传用户id 请求体传团队id
