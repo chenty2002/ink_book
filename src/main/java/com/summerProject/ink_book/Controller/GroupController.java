@@ -39,11 +39,13 @@ public class GroupController {
         }
      */
     @PostMapping("/createGroup")
-    public Result<Group> createGroup(@RequestParam("userId") Integer id, @RequestBody JSONObject param) {
+    @ResponseBody
+    public Result<Group> createGroup(@RequestBody JSONObject param) {
+        System.out.println(param.getString("userId"));
         log.info("[GroupController.createGroup] --- requesting creating group");
         String groupName = param.getString("groupName");
         String groupProfile = param.getString("groupProfile");
-        return groupservice.createGroup(id, groupName, groupProfile);
+        return groupservice.createGroup(param.getInteger("userId"), groupName, groupProfile);
 
     }
 

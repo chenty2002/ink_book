@@ -8,6 +8,8 @@ import com.summerProject.ink_book.Utils.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -30,8 +32,18 @@ public class UserController {
      */
     @PostMapping("/sendEmail")
     public Result<String> sendEmail(@RequestBody JSONObject object) {
+        User userinfo = userService.selectUserByEmail(object.getString("userEmail"));
+        if (userinfo != null) {
+            return Result.fail("该邮箱已被注册");
+        }
         log.info("[MailController.sendEmail] --- validating email and sending code");
-        return mailService.sendEmail(object.getString("email"));
+        return mailService.sendEmail(object.getString("userEmail"));
+    }
+
+    @PostMapping("/logout")
+    public Result<User> logout(HttpServletRequest request) {
+        request.getSession().removeAttribute("userId");
+        return Result.success("Logout Success", null);
     }
 
     // 登录 POST 请求体传参
@@ -44,19 +56,10 @@ public class UserController {
         }
      */
     @PostMapping("/login")
-    public Result<User> login(@RequestBody JSONObject object) {
-        log.info("[UserController.login] --- requesting login");
-        User user = new User();
-        user.setPassword(object.getString("password"));
-        user.setUserEmail(object.getString("userEmail"));
+    public Result<User> login(HttpServletRequest request, @RequestBody User user) {
         Result<User> result = userService.login(user);
-        if (result.getCode() == 1) {
-            log.info("[UserController.login] --- login SUCCESS with User:");
-            log.info(user.toString());
-        } else {
-            log.info("[UserController.login] --- login FAILURE with User:");
-            log.info(user.toString());
-        }
+        if (result.getCode() == 1)
+            request.getSession().setAttribute("userId", result.getData().getUserId());
         return result;
     }
 
@@ -82,6 +85,12 @@ public class UserController {
         user.setUserEmail(object.getString("userEmail"));
         user.setUserRealName(object.getString("userRealName"));
         user.setUserProfile(object.getString("userProfile"));
+
+        User userinfo = userService.selectUserByName(user.getUserName());
+        if (userinfo != null) {
+            return Result.fail("该用户名已被注册");
+        }
+
         return userService.register(user);
     }
 
@@ -91,8 +100,8 @@ public class UserController {
         url: /info?userId=
      */
     @GetMapping("/info")
-    public Result<User> getInfo(@RequestParam("userId") Integer id) {
-        log.info("[UserController.getInfo] --- requesting user info");
+    public Result<User> getInfo(HttpServletRequest request) {
+        Integer id = (Integer) request.getSession().getAttribute("userId");
         return userService.getInfo(id);
     }
 }

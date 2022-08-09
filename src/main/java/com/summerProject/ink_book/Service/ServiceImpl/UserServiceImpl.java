@@ -22,13 +22,23 @@ public class UserServiceImpl implements UserService {
     public Result<User> login(User user) {
         String pwd = user.getPassword();
         String md5pwd = DigestUtils.md5DigestAsHex(pwd.getBytes(StandardCharsets.UTF_8));
-        user.setUserEmail(user.getUserEmail());
+        user.setUserEmail(user.getUserName());
         user.setPassword(md5pwd);
         User newUser = userMapper.selectUserByPwd(user);
         if (newUser != null) {
             newUser.setPassword(pwd);
             return Result.success("Login Success", newUser);
         } else return Result.fail("Login Failure");
+    }
+
+    @Override
+    public User selectUserByName(String name) {
+        return userMapper.selectUserByName(name);
+    }
+
+    @Override
+    public User selectUserByEmail(String email) {
+        return userMapper.selectUserByEmail(email);
     }
 
     @Override
@@ -49,6 +59,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result<List<User>> searchUser(String word) {
-        return Result.success("Search Result", userMapper.selectUserByKeyword(word));
+        return null;
     }
 }

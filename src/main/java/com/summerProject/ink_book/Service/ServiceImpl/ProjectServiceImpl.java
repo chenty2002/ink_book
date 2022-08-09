@@ -3,13 +3,11 @@ package com.summerProject.ink_book.Service.ServiceImpl;
 import com.summerProject.ink_book.Entity.Project;
 import com.summerProject.ink_book.Mapper.GroupProjectMapper;
 import com.summerProject.ink_book.Mapper.ProjectMapper;
-import com.summerProject.ink_book.Service.GroupService;
 import com.summerProject.ink_book.Service.ProjectService;
 import com.summerProject.ink_book.Utils.Result;
-import com.summerProject.ink_book.Utils.UserLevel;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,18 +15,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectMapper projectMapper;
     private final GroupProjectMapper groupProjectMapper;
 
-    private final GroupService groupService;
-
-    public ProjectServiceImpl(ProjectMapper projectMapper, GroupProjectMapper groupProjectMapper, GroupService groupService) {
+    public ProjectServiceImpl(ProjectMapper projectMapper, GroupProjectMapper groupProjectMapper) {
         this.projectMapper = projectMapper;
         this.groupProjectMapper = groupProjectMapper;
-        this.groupService = groupService;
     }
 
     @Override
-    public Result<Project> newProject(Project project, Integer userId, Integer groupId) {
-        if (!groupService.isAdmin(groupId, userId, UserLevel.ADMINISTRATOR.getCode()))
-            return Result.fail("Unauthorized");
+    public Result<Project> newProject(Project project, Integer groupId) {
         if (projectMapper.insertProject(project) > 0) {//新增项目成功
             if (groupProjectMapper.insertProject(project.getProjectId(), groupId) > 0) {
                 project.setDeleted(0);
@@ -39,9 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result<String> deleteProject(Integer userId, Integer groupId, Integer projectId) {
-        if (!groupService.isAdmin(groupId, userId, UserLevel.ADMINISTRATOR.getCode()))
-            return Result.fail("Unauthorized");
+    public Result<String> deleteProject(Integer projectId) {
         if (projectMapper.deleteProjectById(projectId) > 0) {
             groupProjectMapper.deleteProjectById(projectId);
             return Result.success("delete project success", "");
@@ -66,29 +57,26 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Result<List<Project>> getGroupProject(Integer id, Integer deleted, String sort) {
+    public Result<List<Project>> getGroupProject(Integer id, Integer deleted) {
         List<Project> projects = projectMapper.selectProjectByGroup(id, deleted);
-        switch (sort) {
-            case "":
-                break;
-            case "time1":
-                projects.sort(Comparator.comparing(Project::getCreateTime));
-                break;
-            case "time2":
-                projects.sort((p1, p2) -> p2.getCreateTime().compareTo(p1.getCreateTime()));
-                break;
-            case "name1":
-                projects.sort(Comparator.comparing(Project::getProjectName));
-                break;
-            case "name2":
-                projects.sort(((p1, p2) -> p2.getProjectName().compareTo(p1.getProjectName())));
-                break;
-        }
         return Result.success("All Projects of a Group", projects);
     }
 
     @Override
-    public Result<List<Project>> getProjectByCons(Integer groupId, String word) {
-        return Result.success("All Fitting Projects", projectMapper.selectProjectByCons(groupId, "%" + word + "%"));
+    public Result<List<Project>> getProjectByCons(Integer groupId, String word, LocalDateTime start, LocalDateTime end, Integer deleted) {
+        if (start == null)
+            start = LocalDateTime.now().minusYears(10);
+        if (end == null)
+            end = LocalDateTime.now();
+        if (word == null)
+            word = "";
+        return Result.success("All Fitting Projects", projectMapper.selectProjectByCons(groupId, "%" + word + "%", start, end, deleted));
+    }
+
+    @Override
+    public Result<String> restoreProject(Integer projectId) {
+        if (projectMapper.restoreProject(projectId) > 0)
+            return Result.success("Project Restored", "");
+        return Result.fail("Project not Restored");
     }
 }

@@ -32,6 +32,11 @@
         </set>
         where projectId = #{projectId} and deleted = 0
     </update>
+    <update id="restoreProject">
+        update projects
+        set deleted = 0
+        where projectId = #{id}
+    </update>
     <select id="selectProjectByGroup" resultType="com.summerProject.ink_book.Entity.Project">
         select *
         from projects a,
@@ -46,6 +51,9 @@
              group_project b
         where a.projectId = b.projectId
           and b.groupId = #{groupId}
+          and a.createTime &gt; #{start}
+          and a.createTime &lt; #{end}
+          and a.deleted = #{deleted}
           and (projectName like #{word}
             or projectDescription like #{word})
     </select>

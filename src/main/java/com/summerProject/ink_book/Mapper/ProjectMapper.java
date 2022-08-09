@@ -3,6 +3,7 @@ package com.summerProject.ink_book.Mapper;
 import com.summerProject.ink_book.Entity.Project;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -17,5 +18,7 @@ public interface ProjectMapper {
 
     List<Project> selectProjectByGroup(Integer id, Integer deleted);
 
-    List<Project> selectProjectByCons(Integer groupId, String word);
+    List<Project> selectProjectByCons(Integer groupId, String word, LocalDateTime start, LocalDateTime end, Integer deleted);
+
+    Integer restoreProject(Integer id);
 }

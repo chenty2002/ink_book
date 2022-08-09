@@ -11,7 +11,7 @@ public interface UserMapper {
 
     User selectUserById(Integer id);
 
-    List<User> selectUserByName(String name);
+    User selectUserByName(String name);
 
     User selectUserByEmail(String email);
 
@@ -21,5 +21,4 @@ public interface UserMapper {
 
     User getUser(Integer id);
 
-    List<User> selectUserByKeyword(String word);
 }
