@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.summerProject.ink_book.Mapper.GroupMapper">
+    <delete id="deleteGroup">
+        delete
+        from ink_book.`groups`
+        where ink_book.`groups`.groupId = #{groupId}
+    </delete>
+    <select id="selectGroupById" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups`
+        where groupId = #{id}
+    </select>
+    <insert id="insertGroup" parameterType="com.summerProject.ink_book.Entity.Group" useGeneratedKeys="true"
+            keyProperty="groupId">
+        insert into ink_book.`groups`(ink_book.`groups`.groupName, ink_book.`groups`.groupCreateTime,
+                                      ink_book.`groups`.groupProfile)
+        VALUES (#{groupName}, #{groupCreateTime}, #{groupProfile})
+    </insert>
+    <select id="selectGroupByMem" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+    </select>
+    <select id="selectGroupByMemPage" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+        limit #{page}, #{size}
+    </select>
+    <select id="selectGroupByFounder" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+          and b.userLevel = 3
+    </select>
+    <select id="selectGroupByFounderPage" resultType="com.summerProject.ink_book.Entity.Group">
+        select *
+        from ink_book.`groups` a,
+             ink_book.group_user b
+        where a.groupId = b.groupId
+          and b.userId = #{id}
+          and b.userLevel = 3
+        limit #{page}, #{size}
+    </select>
+    <select id="selectUserByGroup" resultType="com.summerProject.ink_book.Entity.User">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+    </select>
+    <select id="selectUserByGroupPage" resultType="com.summerProject.ink_book.Entity.User">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+        limit #{page}, #{size}
+    </select>
+    <select id="selectUserByGroupLevel" resultType="com.summerProject.ink_book.Entity.User">
+        select *
+        from users a,
+             group_user b
+        where a.userId = b.userId
+          and b.groupId = #{id}
+          and b.userLevel >= #{level}
+    </select>
+    <update id="updateGroup" parameterType="com.summerProject.ink_book.Entity.Group">
+        update ink_book.`groups`
+        <set>
+            <if test="groupName != null">
+                groupName = #{groupName},
+            </if>
+            <if test="groupProfile != null">
+                groupProfile = #{groupProfile}
+            </if>
+        </set>
+        where groupId = #{groupId}
+    </update>
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.summerProject.ink_book.Mapper.GroupUserMapper">
+    <select id="getLevel" resultType="int">
+        select userLevel
+        from ink_book.group_user
+        where userId = #{user}
+          and groupId = #{group}
+    </select>
+    <insert id="insertMem">
+        insert into ink_book.group_user(ink_book.group_user.groupId, ink_book.group_user.userId,
+                                        ink_book.group_user.userLevel)
+        VALUES (#{group}, #{user}, 1)
+    </insert>
+    <update id="setAdmin">
+        update ink_book.group_user
+        set ink_book.group_user.userLevel = 2
+        where ink_book.group_user.groupId = #{group}
+          and ink_book.group_user.userId = #{user}
+    </update>
+    <delete id="deleteMem">
+        delete
+        from ink_book.group_user
+        where ink_book.group_user.groupId = #{group}
+          and ink_book.group_user.userId = #{user}
+    </delete>
+    <delete id="deleteGroup">
+        delete
+        from ink_book.group_user
+        where ink_book.group_user.groupId = #{groupId}
+    </delete>
+    <insert id="insertGroup">
+        insert into ink_book.group_user
+        VALUES (#{groupId}, #{userId}, 3)
+    </insert>
+</mapper>

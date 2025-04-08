@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.summerProject.ink_book.Mapper.ProjectMapper">
+    <insert id="insertProject" parameterType="com.summerProject.ink_book.Entity.Project" useGeneratedKeys="true"
+            keyProperty="projectId">
+        insert into projects(projectName, projectDescription, deleted, createTime)
+        VALUES (#{projectName}, #{projectDescription}, 0, #{createTime})
+    </insert>
+    <update id="deleteProjectById">
+        update projects
+        set deleted = deleted + 1
+        where projects.projectId = #{projectId}
+    </update>
+    <select id="selectProjectById" resultType="com.summerProject.ink_book.Entity.Project">
+        select *
+        from projects
+        where projectId = #{projectId}
+          and deleted = 0
+    </select>
+    <update id="modifyProject" parameterType="com.summerProject.ink_book.Entity.Project">
+        update projects
+        <set>
+            <if test="projectName != null">
+                projectName = #{projectName},
+            </if>
+            <if test="projectDescription != null">
+                projectDescription = #{projectDescription}
+            </if>
+        </set>
+        where projectId = #{projectId} and deleted = 0
+    </update>
+    <select id="selectProjectByGroup" resultType="com.summerProject.ink_book.Entity.Project">
+        select *
+        from projects a,
+             group_project b
+        where a.projectId = b.projectId
+          and a.deleted = #{deleted}
+          and b.groupId = #{id}
+    </select>
+    <select id="selectProjectByCons" resultType="com.summerProject.ink_book.Entity.Project">
+        select *
+        from projects a,
+             group_project b
+        where a.projectId = b.projectId
+          and b.groupId = #{groupId}
+          and (projectName like #{word}
+            or projectDescription like #{word})
+    </select>
+</mapper>
